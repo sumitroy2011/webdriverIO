@@ -1,0 +1,225 @@
+swagger: "2.0"
+info:
+  description: "This is a specification for vacation booking process that handles interactions between three different entities i.e. vacation, task management, and notification"
+  version: "0.0.1"
+  title: "Vacation booking process"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "akhanna@sapient.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "nationwide.co.uk"
+basePath: "/v1"
+tags:
+- name: "Vacation booking process"
+  description: "Booking your vacations using event driven architecture"
+  externalDocs:
+    description: "Find out more"
+    url: "https://vacation.nationwide.co.uk"
+schemes:
+- "https"
+paths:
+  /vacations:
+    put:
+      tags:
+      - "Create Vacation"
+      summary: "Create a new vacation in the system for an employee"
+      description: ""
+      operationId: "addVacation"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Vacation object that needs to be created in the system"
+        required: true
+        schema:
+          $ref: "#/definitions/vacation"
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "Invalid input"
+  /vacations/{vacationid}:
+    put:
+      tags:
+      - "Update Vacation"
+      summary: "Update vacation in the system for an employee"
+      description: ""
+      operationId: "updateVacation"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vacationid"
+        in: "path"
+        description: "ID of vacation to update"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "Invalid input"        
+  /vacations/{vacationid}/{status}:
+    patch:
+      tags:
+      - "Approve/Decline/Cancel Vacation"
+      summary: "Approve, decline or cancel vacation"
+      description: ""
+      operationId: "updateVacationStatus"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "vacationid"
+        in: "path"
+        description: "ID of vacation to update"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "status"
+        in: "path"
+        description: "status of vacation to update"
+        required: true
+        type: "string"
+        enum:
+          - "approve"
+          - "decline"
+          - "cancel"
+      responses:
+        200:
+          description: "successful operation"
+        405:
+          description: "Invalid input"
+          
+  /vacations/requestor/{empid}:
+    get:
+      tags:
+      - "retrieve vacations for employee"
+      summary: "retrieve vacations for employee"
+      description: ""
+      operationId: "retrieveVacations"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "empid"
+        in: "path"
+        description: "ID of employee to retrieve vacations"
+        required: true
+        type: "integer"
+        format: "int64"
+      
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/vacation"
+        405:
+          description: "Invalid input"
+  /tasks/owner/{ownerid}:
+    get:
+      tags:
+      - "retrieve tasks for employee"
+      summary: "retrieve tasks for employee"
+      description: ""
+      operationId: "retrieveTasks"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "ownerid"
+        in: "path"
+        description: "ID of vacation to update"
+        required: true
+        type: "integer"
+        format: "int64"
+      
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/task"
+        405:
+          description: "Invalid input"
+  /tasks/status/delayed:
+    get:
+      tags:
+      - "retrieve tasks that are delayed"
+      summary: "retrieve tasks that are delayed"
+      description: ""
+      operationId: "retrieveDelayedTasks"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/task"
+        405:
+          description: "Invalid input"
+definitions:
+  vacation:
+    type: "object"
+    required:
+    - "empId"
+    - "startDate"
+    properties:
+      empId:
+        type: "integer"
+        format: "int64"
+      startDate:
+        type: "string"
+        example: "10-04-2018"
+      endDate:
+        type: "string"
+        example: "10-04-2018"
+  task:
+    type: "object"
+    required:
+    - "taskId"
+    - "ownerId"
+    - "createdDate"
+    - "status"
+    - "taskType"
+    - "additionalInfo"
+    properties:
+      taskId:
+        type: "integer"
+        format: "int64"
+      ownerId:
+        type: "integer"
+        format: "int64"
+      createdDate:
+        type: "string"
+        example: "10-04-2018"
+      status:
+        type: "string"
+        example: "pending"
+      taskType:
+        type: "string"
+        example: "vacation_approval"
+      additionalInfo:
+        type: "string"
+        example: "vacationId"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
